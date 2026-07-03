@@ -1708,6 +1708,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+<script>
+/* Service Worker registrieren (nur wenn über http/https ausgeliefert –
+   beim lokalen Öffnen als Datei wird nichts registriert) */
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function (e) {
+      console.warn('Service Worker konnte nicht registriert werden:', e);
+    });
+  });
+}
+</script>
 </body>
 </html>
 
