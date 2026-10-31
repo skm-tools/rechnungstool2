@@ -1,6 +1,6 @@
-/* SKM-Rechnung: Offline-Speicher fuer die App-Dateien. Es werden keine Eingaben gespeichert oder gesendet. */
-const CACHE = 'skm-rechnung-2026-10-31-1';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
+/* Rechnung SKM: speichert nur die App-Dateien für den Offline-Start. Eingaben werden weder gespeichert noch gesendet. */
+const CACHE = 'skm-rechnung-2026-10-31-2';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(FILES)).then(() => self.skipWaiting()));
