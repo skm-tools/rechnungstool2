@@ -1,66 +1,29 @@
-/* Service Worker für die Rechnungsvorlage SKM
-   Strategie: Offline-first. Beim Installieren werden alle Dateien
-   zwischengespeichert; danach funktioniert die App komplett ohne Internet.
-   WICHTIG: Bei jeder Änderung an index.html die CACHE_VERSION erhöhen,
-   damit installierte Apps das Update erhalten. */
-
-const CACHE_VERSION = 'rechnung-skm-v1';
-
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-512-maskable.png'
-];
+/* SKM-Rechnung: Offline-Speicher fuer die App-Dateien. Es werden keine Eingaben gespeichert oder gesendet. */
+const CACHE = 'skm-rechnung-2026-10-31-1';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => cache.addAll(ASSETS))
-  );
-  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(FILES)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k))
-      )
-    ).then(() => self.clients.claim())
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('skm-rechnung-') && k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
+/* Erst aus dem Speicher antworten, im Hintergrund die neueste Version holen. */
 self.addEventListener('fetch', (event) => {
-  // Nur GET-Anfragen behandeln
-  if (event.request.method !== 'GET') return;
-
-  event.respondWith(
-    caches.match(event.request, { ignoreSearch: true }).then((cached) => {
-      if (cached) {
-        // Im Hintergrund aktualisieren (stale-while-revalidate)
-        event.waitUntil(
-          fetch(event.request).then((fresh) => {
-            if (fresh && fresh.ok) {
-              return caches.open(CACHE_VERSION).then((c) => c.put(event.request, fresh.clone()));
-            }
-          }).catch(() => {})
-        );
-        return cached;
-      }
-      return fetch(event.request).then((fresh) => {
-        if (fresh && fresh.ok && new URL(event.request.url).origin === self.location.origin) {
-          const clone = fresh.clone();
-          caches.open(CACHE_VERSION).then((c) => c.put(event.request, clone));
-        }
-        return fresh;
-      }).catch(() => {
-        // Offline & nicht im Cache → zur Startseite (Single-Page-App)
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
-      });
-    })
-  );
+  const req = event.request;
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  event.respondWith(caches.open(CACHE).then(async (cache) => {
+    const cached = await cache.match(req, { ignoreSearch: true });
+    const fresh = fetch(req).then((res) => {
+      if (res && res.ok) cache.put(req, res.clone());
+      return res;
+    }).catch(() => cached);
+    return cached || fresh;
+  }));
 });

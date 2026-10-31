@@ -1,0 +1,7 @@
+Verwendete Bibliotheken und Schriften (in index.html eingebettet)
+
+pdf-lib (PDF erstellen) - MIT-Lizenz - https://github.com/Hopding/pdf-lib
+@pdf-lib/fontkit (Schriften in PDFs) - MIT-Lizenz - https://github.com/Hopding/fontkit
+heic2any (iPhone-Fotos im HEIC-Format umwandeln) - MIT-Lizenz - https://github.com/alexcorvi/heic2any
+DejaVu Sans / DejaVu Serif Italic (Teilmenge, fuer Namen mit Sonderzeichen wie s-Cedille, g-Breve, l-Strich)
+  - freie Lizenz der DejaVu-Schriften, siehe LIZENZ_DEJAVU.txt

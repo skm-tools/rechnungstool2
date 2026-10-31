@@ -1,15 +1,13 @@
 {
-  "id": "./",
-  "name": "Rechnungsvorlage Sprach- und Kulturmittlung",
-  "short_name": "Rechnung SKM",
-  "description": "Rechnungen für Sprach- und Kulturmittlung erstellen, als PDF erzeugen und teilen.",
+  "name": "SKM-Rechnung",
+  "short_name": "SKM-Rechnung",
+  "description": "Rechnungen für die Sprach- und Kulturmittlung bei MeG erstellen",
   "lang": "de",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0b1220",
-  "theme_color": "#2b6cb0",
+  "background_color": "#F2F5FA",
+  "theme_color": "#1F4FD1",
   "icons": [
     {
       "src": "icon-192.png",
@@ -24,7 +22,7 @@
       "purpose": "any"
     },
     {
-      "src": "icon-512-maskable.png",
+      "src": "icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
